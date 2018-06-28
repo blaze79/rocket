@@ -7,9 +7,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.opencv.core.Mat;
 import org.slientpom.rocket.domain.flight.FlyTrack;
+import org.slientpom.rocket.domain.flight.PursitTrack;
 import org.slientpom.rocket.javafx.utils.FxUtils;
-import org.slientpom.rocket.model.FirstGModel;
+import org.slientpom.rocket.model.PursitFlightModel;
 import org.slientpom.rocket.model.SingleFlightModel;
+import org.slientpom.rocket.model.impl.FirstGModel;
+import org.slientpom.rocket.model.impl.StupidRocketModel;
 import org.slientpom.rocket.opencv.ModelRenderer;
 
 /**
@@ -26,6 +29,17 @@ public class XFController {
 
     @FXML
     protected void runFlight(ActionEvent event) {
+        PursitFlightModel model = new StupidRocketModel();
+        PursitTrack pursitTrack = model.generateFlight();
+
+        ModelRenderer renderer = new ModelRenderer();
+        Mat frame = renderer.renderPursit(pursitTrack);
+
+        Image imageToShow = FxUtils.mat2Image(frame);
+        FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
+    }
+
+    private void oldFlight() {
         SingleFlightModel model = new FirstGModel();
         FlyTrack track = model.generateFlight();
 

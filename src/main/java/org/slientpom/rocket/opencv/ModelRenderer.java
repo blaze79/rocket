@@ -6,6 +6,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.slientpom.rocket.domain.flight.Fly;
 import org.slientpom.rocket.domain.flight.FlyTrack;
+import org.slientpom.rocket.domain.flight.PursitTrack;
 import org.slientpom.rocket.domain.geom.Vector;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ModelRenderer {
     private int imageHeight = 600;
     private Scalar backColor = new Scalar(235, 206, 135);
     private Scalar objectColor = new Scalar(0, 0, 0);
+    private Scalar rocketColor = new Scalar(0, 0, 255);
 
     private org.slientpom.rocket.domain.geom.Point nePoint = org.slientpom.rocket.domain.geom.Point.point(-1500, 1000);
     private org.slientpom.rocket.domain.geom.Point swPoint = org.slientpom.rocket.domain.geom.Point.point(1500, -1000);
@@ -50,6 +52,12 @@ public class ModelRenderer {
         Mat image = createImage();
 
         List<Fly> path = track.getTrack();
+        drawTrack(image, path, objectColor);
+
+        return image;
+    }
+
+    private void drawTrack(Mat image,  List<Fly> path, Scalar color) {
         for(int i=0; i<path.size() - 1; i++) {
             Fly current = path.get(i);
             Fly next = path.get(i+1);
@@ -58,10 +66,26 @@ public class ModelRenderer {
                     image,
                     transformPoint(current.getPoint()),
                     transformPoint(next.getPoint()),
-                    objectColor,
+                    color,
                     1
             );
         }
+    }
+
+    public Mat renderPursit(PursitTrack track) {
+        Mat image = createImage();
+
+        drawTrack(
+                image,
+                track.getTarget().getTrack(),
+                objectColor
+        );
+
+        drawTrack(
+                image,
+                track.getRocket().getTrack(),
+                rocketColor
+        );
 
         return image;
     }
