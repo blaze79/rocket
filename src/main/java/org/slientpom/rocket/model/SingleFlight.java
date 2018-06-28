@@ -17,10 +17,10 @@ public class SingleFlight {
 
     public FlyTrack flyCircle(double a, double t, int iter) {
         FlyTrack track = new FlyTrack();
-        track.push(fly);
+        track.push(fly.copy());
         for (int i = 0; i < iter; ++i) {
             fly.step(t, 0, a);
-            track.push(fly);
+            track.push(fly.copy());
         }
 
         return track;
