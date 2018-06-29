@@ -12,7 +12,8 @@
          <padding>
             <Insets bottom="25" left="25" right="25" top="25" />
          </padding>
-         <Button fx:id="button" alignment="center" onAction="#runFlight" text="Run flight" />
+         <Button fx:id="button1" alignment="center" onAction="#run1Flight" text="2 Drones flight" />
+         <Button fx:id="button2" alignment="center" onAction="#run2Flight" text="Bang Bang" />
       </HBox>
    </bottom>
    <center>

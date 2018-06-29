@@ -4,9 +4,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.slientpom.rocket.domain.flight.Fly;
-import org.slientpom.rocket.domain.flight.FlyTrack;
-import org.slientpom.rocket.domain.flight.PursitTrack;
+import org.slientpom.rocket.domain.geom.Fly;
+import org.slientpom.rocket.domain.geom.FlyTrack;
+import org.slientpom.rocket.domain.geom.PursitTrack;
 import org.slientpom.rocket.domain.geom.Vector;
 
 import java.util.List;

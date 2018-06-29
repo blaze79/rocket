@@ -4,6 +4,8 @@ package org.slientpom.rocket.domain.flight;
  * Created by Vlad on 29.06.2018.
  */
 
+import org.slientpom.rocket.domain.geom.Fly;
+
 /**
  * I don't want to be a missile, I am target drone
  */
@@ -24,5 +26,10 @@ public class StupidMissileDron implements FlyWithSeeker {
     public boolean step(double t, Fly target) {
         implDrone.step(t);
         return false;
+    }
+
+    @Override
+    public boolean canFly() {
+        return true;
     }
 }

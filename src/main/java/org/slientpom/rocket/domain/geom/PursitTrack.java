@@ -1,4 +1,4 @@
-package org.slientpom.rocket.domain.flight;
+package org.slientpom.rocket.domain.geom;
 
 /**
  * Created by Vlad on 29.06.2018.

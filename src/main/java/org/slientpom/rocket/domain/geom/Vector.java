@@ -40,6 +40,10 @@ public class Vector {
         return Math.sqrt(x * x + y * y);
     }
 
+    public double lengthSq() {
+        return x * x + y * y;
+    }
+
     public Vector unify() {
         return mul(1/length());
     }

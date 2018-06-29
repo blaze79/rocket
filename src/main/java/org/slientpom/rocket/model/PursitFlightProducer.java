@@ -1,6 +1,9 @@
 package org.slientpom.rocket.model;
 
 import org.slientpom.rocket.domain.flight.*;
+import org.slientpom.rocket.domain.geom.Fly;
+import org.slientpom.rocket.domain.geom.FlyTrack;
+import org.slientpom.rocket.domain.geom.PursitTrack;
 
 /**
  * Created by Vlad on 27.06.2018.
@@ -22,6 +25,11 @@ public class PursitFlightProducer {
         rocketTrack.push(rocket.currentPosition());
 
         for (int i = 0; i < iter; ++i) {
+            if(!rocket.canFly()) {
+                System.out.printf("Dron steel alive! Rocket is out at %f second!%n", t*i);
+                return PursitTrack.miss(targetTrack, rocketTrack);
+            }
+
             target.step(t);
             Fly targetPosition = target.currentPosition();
             boolean result = rocket.step(t, targetPosition.copy());
@@ -29,10 +37,12 @@ public class PursitFlightProducer {
             targetTrack.push(targetPosition);
             rocketTrack.push(rocket.currentPosition());
             if(result) {
+                System.out.printf("We got a kill! Well done at %f second %n", t*i);
                 return PursitTrack.kill(targetTrack, rocketTrack);
             }
         }
 
+        System.out.printf("Dron steel alive! You miss!%n");
         return PursitTrack.miss(targetTrack, rocketTrack);
     }
 

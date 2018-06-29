@@ -1,5 +1,6 @@
 package org.slientpom.rocket.domain.flight;
 
+import org.slientpom.rocket.domain.geom.Fly;
 import org.slientpom.rocket.domain.geom.Point;
 import org.slientpom.rocket.domain.geom.Vector;
 import org.testng.annotations.Test;

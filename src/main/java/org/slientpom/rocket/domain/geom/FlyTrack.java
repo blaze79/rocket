@@ -1,4 +1,6 @@
-package org.slientpom.rocket.domain.flight;
+package org.slientpom.rocket.domain.geom;
+
+import org.slientpom.rocket.domain.geom.Fly;
 
 import java.util.ArrayList;
 import java.util.List;

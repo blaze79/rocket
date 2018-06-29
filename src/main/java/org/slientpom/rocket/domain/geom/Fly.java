@@ -1,7 +1,4 @@
-package org.slientpom.rocket.domain.flight;
-
-import org.slientpom.rocket.domain.geom.Point;
-import org.slientpom.rocket.domain.geom.Vector;
+package org.slientpom.rocket.domain.geom;
 
 /**
  * Created by Vlad on 27.06.2018.
