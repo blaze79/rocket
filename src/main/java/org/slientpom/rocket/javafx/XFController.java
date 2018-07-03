@@ -13,6 +13,7 @@ import org.slientpom.rocket.model.PursitFlightModel;
 import org.slientpom.rocket.model.SingleFlightModel;
 import org.slientpom.rocket.model.impl.BangBangRocketModel;
 import org.slientpom.rocket.model.impl.FirstGModel;
+import org.slientpom.rocket.model.impl.HeadToHeadRocketModel;
 import org.slientpom.rocket.model.impl.StupidRocketModel;
 import org.slientpom.rocket.opencv.ModelRenderer;
 
@@ -25,6 +26,8 @@ public class XFController {
     private Button button1;
     @FXML
     private Button button2;
+    @FXML
+    private Button button3;
     // the FXML image view
     @FXML
     private ImageView currentFrame;
@@ -52,6 +55,19 @@ public class XFController {
         Image imageToShow = FxUtils.mat2Image(frame);
         FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
     }
+
+    @FXML
+    protected void run3Flight(ActionEvent event) {
+        PursitFlightModel model = new HeadToHeadRocketModel();
+        PursitTrack pursitTrack = model.generateFlight();
+
+        ModelRenderer renderer = new ModelRenderer();
+        Mat frame = renderer.renderPursit(pursitTrack);
+
+        Image imageToShow = FxUtils.mat2Image(frame);
+        FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
+    }
+
 
 
     private void oldFlight() {
