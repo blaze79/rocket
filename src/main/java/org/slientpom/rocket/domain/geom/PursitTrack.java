@@ -1,5 +1,7 @@
 package org.slientpom.rocket.domain.geom;
 
+import java.util.stream.IntStream;
+
 /**
  * Created by Vlad on 29.06.2018.
  */
@@ -25,6 +27,18 @@ public class PursitTrack {
     public boolean isKilled() {
         return killed;
     }
+
+    public double minDistance() {
+        int minLength = Math.min(target.getTrack().size(), rocket.getTrack().size());
+        return Math.sqrt(
+                IntStream.range(0, minLength).mapToDouble(
+                        i -> target.getTrack().get(i).getPoint().vectorTo(
+                                rocket.getTrack().get(i).getPoint()
+                        ).lengthSq()
+                ).min().getAsDouble()
+        );
+    }
+
 
     public static PursitTrack miss(FlyTrack target, FlyTrack rocket) {
         return new PursitTrack(target, rocket, false);

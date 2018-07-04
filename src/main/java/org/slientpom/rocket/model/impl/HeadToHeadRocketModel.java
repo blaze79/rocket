@@ -16,13 +16,13 @@ import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
  */
 public class HeadToHeadRocketModel implements PursitFlightModel {
     private double maxG = 5.5;
-    private double maxGBang = 20+6;
+    private double maxGBang = 20+4;
 
     @Override
     public PursitTrack generateFlight() {
         TargetDron dron = new TargetDron(
                 new Fly(
-                        Point.point(-900, -800),
+                        Point.point(-900, -600),
                         Vector.vector(0, 200)
                 ),
                 gLoad(maxG)
@@ -30,12 +30,12 @@ public class HeadToHeadRocketModel implements PursitFlightModel {
 
         BangBangMissile missile = new BangBangMissile(
                 new Fly(
-                        Point.point(-1200, 1000),
+                        Point.point(-1200, 900),
                         Vector.vector(0, -600)
                 )
         );
         missile.setMaxG(gLoad(maxGBang));
-        missile.setLiftToDrag(3);
+        missile.setLiftToDrag(4);
         //missile.setMinDistance(4*4);
 
         PursitFlightProducer flightScenario = new PursitFlightProducer(dron, missile);

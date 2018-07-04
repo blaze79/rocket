@@ -27,7 +27,7 @@ public class PursitFlightProducer {
         for (int i = 0; i < iter; ++i) {
             if(!rocket.canFly()) {
                 System.out.printf("Dron steel alive! Rocket is out at %f second!%n", t*i);
-                return PursitTrack.miss(targetTrack, rocketTrack);
+                return logResult(PursitTrack.miss(targetTrack, rocketTrack));
             }
 
             target.step(t);
@@ -42,8 +42,13 @@ public class PursitFlightProducer {
             }
         }
 
-        System.out.printf("Dron steel alive! You miss!%n");
-        return PursitTrack.miss(targetTrack, rocketTrack);
+        System.out.printf("Dron still alive! You miss!%n");
+        return logResult(PursitTrack.miss(targetTrack, rocketTrack));
+    }
+
+    private PursitTrack logResult(PursitTrack result) {
+        System.out.printf("Closes distance is %f %n", result.minDistance());
+        return result;
     }
 
 }
