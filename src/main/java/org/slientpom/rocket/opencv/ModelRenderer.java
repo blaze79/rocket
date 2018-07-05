@@ -90,6 +90,26 @@ public class ModelRenderer {
         return image;
     }
 
+    public Mat renderPursitFrame(PursitTrack track, int time) {
+        Mat image = createImage();
+
+        drawTrack(
+                image,
+                track.getTarget().getTrackForTime(time),
+                objectColor
+        );
+
+        drawTrack(
+                image,
+                track.getRocket().getTrackForTime(time),
+                rocketColor
+        );
+
+        return image;
+    }
+
+    //getTrackForTime
+
     private Point transformPoint(org.slientpom.rocket.domain.geom.Point point) {
         Vector area = nePoint.vectorTo(swPoint);
         Vector moved = nePoint.vectorTo(point);

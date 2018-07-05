@@ -17,7 +17,7 @@ import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
  */
 public class BangBangRocketModel implements PursitFlightModel {
     private double maxG = 5.5;
-    private double maxGBang = 17 + 1;
+    private double maxGBang = 17;
 
     @Override
     public PursitTrack generateFlight() {

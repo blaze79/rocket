@@ -9,11 +9,13 @@ public class PursitTrack {
     private FlyTrack target;
     private FlyTrack rocket;
     private boolean killed;
+    private double timeStep;
 
-    public PursitTrack(FlyTrack target, FlyTrack rocket, boolean killed) {
+    public PursitTrack(FlyTrack target, FlyTrack rocket, boolean killed, double t) {
         this.target = target;
         this.rocket = rocket;
         this.killed = killed;
+        this.timeStep = t;
     }
 
     public FlyTrack getTarget() {
@@ -39,12 +41,15 @@ public class PursitTrack {
         );
     }
 
-
-    public static PursitTrack miss(FlyTrack target, FlyTrack rocket) {
-        return new PursitTrack(target, rocket, false);
+    public double getTimeStep() {
+        return timeStep;
     }
 
-    public static PursitTrack kill(FlyTrack target, FlyTrack rocket) {
-        return new PursitTrack(target, rocket, true);
+    public static PursitTrack miss(FlyTrack target, FlyTrack rocket, double t) {
+        return new PursitTrack(target, rocket, false, t);
+    }
+
+    public static PursitTrack kill(FlyTrack target, FlyTrack rocket, double t) {
+        return new PursitTrack(target, rocket, true, t);
     }
 }

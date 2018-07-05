@@ -17,6 +17,10 @@ import org.slientpom.rocket.model.impl.HeadToHeadRocketModel;
 import org.slientpom.rocket.model.impl.StupidRocketModel;
 import org.slientpom.rocket.opencv.ModelRenderer;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Vlad on 27.06.2018.
  */
@@ -32,16 +36,14 @@ public class XFController {
     @FXML
     private ImageView currentFrame;
 
+    private ScheduledExecutorService timer;
+
     @FXML
     protected void run1Flight(ActionEvent event) {
         PursitFlightModel model = new StupidRocketModel();
         PursitTrack pursitTrack = model.generateFlight();
 
-        ModelRenderer renderer = new ModelRenderer();
-        Mat frame = renderer.renderPursit(pursitTrack);
-
-        Image imageToShow = FxUtils.mat2Image(frame);
-        FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
+        renderFilm(pursitTrack);
     }
 
     @FXML
@@ -49,11 +51,7 @@ public class XFController {
         PursitFlightModel model = new BangBangRocketModel();
         PursitTrack pursitTrack = model.generateFlight();
 
-        ModelRenderer renderer = new ModelRenderer();
-        Mat frame = renderer.renderPursit(pursitTrack);
-
-        Image imageToShow = FxUtils.mat2Image(frame);
-        FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
+        renderFilm(pursitTrack);
     }
 
     @FXML
@@ -61,6 +59,10 @@ public class XFController {
         PursitFlightModel model = new HeadToHeadRocketModel();
         PursitTrack pursitTrack = model.generateFlight();
 
+        renderFilm(pursitTrack);
+    }
+
+    private void renderOneFrame(PursitTrack pursitTrack) {
         ModelRenderer renderer = new ModelRenderer();
         Mat frame = renderer.renderPursit(pursitTrack);
 
@@ -68,6 +70,49 @@ public class XFController {
         FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
     }
 
+    private void renderFilm(PursitTrack pursitTrack) {
+        ModelRenderer renderer = new ModelRenderer();
+
+        double fps = 20;
+        double msInFrame = (int)Math.floor(1000/fps + 0.5);
+
+        double timeStep = pursitTrack.getTimeStep();
+        double stepPerS = 1.0 / timeStep;
+        double stepsPerFrame = stepPerS / fps;
+        int steps = Math.max( (int)Math.floor(stepsPerFrame + 0.5), 1);
+
+        if(timer == null) {
+            timer = Executors.newSingleThreadScheduledExecutor();
+        }
+
+        timer.scheduleAtFixedRate(new Film(renderer, steps, pursitTrack), 0, (int)msInFrame, TimeUnit.MILLISECONDS );
+    }
+
+    public class Film implements Runnable {
+        private ModelRenderer renderer;
+        private int steps;
+        private int currentStep;
+        private PursitTrack pursitTrack;
+
+        public Film(ModelRenderer renderer, int steps, PursitTrack pursitTrack) {
+            this.renderer = renderer;
+            this.steps = steps;
+            this.pursitTrack = pursitTrack;
+            this.currentStep = 1;
+        }
+
+        @Override
+        public void run() {
+            Mat frame = renderer.renderPursitFrame(pursitTrack, currentStep);
+            Image imageToShow = FxUtils.mat2Image(frame);
+            FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
+
+            if (currentStep > pursitTrack.getRocket().getMaxTime()) {
+                throw new RuntimeException("Film should be stopped");
+            }
+            currentStep += steps;
+        }
+    }
 
 
     private void oldFlight() {
@@ -82,7 +127,16 @@ public class XFController {
     }
 
     protected void setClosed() {
-
+        if (this.timer != null && !this.timer.isShutdown()) {
+            try {
+                // stop the timer
+                this.timer.shutdown();
+                this.timer.awaitTermination(200, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                // log any exception
+                System.err.println("Exception in stopping the frame capture, trying to release the camera now... " + e);
+            }
+        }
     }
 
 }
