@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.videoio.VideoWriter;
 import org.slientpom.rocket.domain.geom.FlyTrack;
 import org.slientpom.rocket.domain.geom.PursitTrack;
 import org.slientpom.rocket.javafx.utils.FxUtils;
@@ -85,7 +87,19 @@ public class XFController {
             timer = Executors.newSingleThreadScheduledExecutor();
         }
 
-        timer.scheduleAtFixedRate(new Film(renderer, steps, pursitTrack), 0, (int)msInFrame, TimeUnit.MILLISECONDS );
+        VideoWriter writer = new VideoWriter(
+                String.format("out_%d.avi", System.currentTimeMillis() / 1000),
+                // -1,
+                VideoWriter.fourcc('M', 'J', 'P', 'G'),
+                fps,
+                new Size(900, 600)
+        );
+
+        if (!writer.isOpened()) {
+            writer = null;
+        }
+
+        timer.scheduleAtFixedRate(new Film(renderer, steps, pursitTrack, writer), 0, (int)msInFrame, TimeUnit.MILLISECONDS );
     }
 
     public class Film implements Runnable {
@@ -93,12 +107,14 @@ public class XFController {
         private int steps;
         private int currentStep;
         private PursitTrack pursitTrack;
+        private VideoWriter writer;
 
-        public Film(ModelRenderer renderer, int steps, PursitTrack pursitTrack) {
+        public Film(ModelRenderer renderer, int steps, PursitTrack pursitTrack, VideoWriter writer) {
             this.renderer = renderer;
             this.steps = steps;
             this.pursitTrack = pursitTrack;
             this.currentStep = 1;
+            this.writer = writer;
         }
 
         @Override
@@ -107,7 +123,14 @@ public class XFController {
             Image imageToShow = FxUtils.mat2Image(frame);
             FxUtils.onFXThread(currentFrame.imageProperty(), imageToShow);
 
+            if (writer != null) {
+                writer.write(frame);
+            }
+
             if (currentStep > pursitTrack.getRocket().getMaxTime()) {
+                if (writer != null) {
+                    writer.release();
+                }
                 throw new RuntimeException("Film should be stopped");
             }
             currentStep += steps;
