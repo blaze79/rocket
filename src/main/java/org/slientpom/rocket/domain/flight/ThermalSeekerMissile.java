@@ -1,5 +1,7 @@
 package org.slientpom.rocket.domain.flight;
 
+import org.slientpom.rocket.domain.flight.filter.ControlFilter;
+import org.slientpom.rocket.domain.flight.filter.SimpleControlFilter;
 import org.slientpom.rocket.domain.flight.seekers.ThermalSeeker;
 import org.slientpom.rocket.domain.geom.Fly;
 import org.slientpom.rocket.domain.geom.Vector;
@@ -10,6 +12,7 @@ import org.slientpom.rocket.domain.geom.Vector;
 public class ThermalSeekerMissile extends MissileWithSeeker implements FlyWithSeeker {
     private ThermalSeeker seeker;
     private double lastANormal = 0;
+    private ControlFilter filter = new SimpleControlFilter();
 
     public ThermalSeekerMissile(Fly fly, ThermalSeeker seeker) {
         super(fly);
@@ -21,25 +24,35 @@ public class ThermalSeekerMissile extends MissileWithSeeker implements FlyWithSe
         return getFly().copy();
     }
 
-    @Override
-    public boolean step(double t, Fly target) {
+    protected double calculateA(Fly target) {
         final Vector vectorToTarget = getFly().getPoint().vectorTo(target.getPoint()).unify();
         final double aNormal = seeker.calculateNormalAcceleration(vectorToTarget, getFly().getVelocity());
         final double aNormalLimit = limitAcceleration(aNormal);
-        final double drag = calculateDrag(aNormalLimit);
+        return limitAcceleration(
+                filter.filterControl(aNormalLimit)
+        );
+    }
 
-        if(lastANormal * aNormalLimit < 0) {
-            System.out.printf("aNormal change sign:%f%n ", aNormalLimit);
+    @Override
+    public boolean step(double t, Fly target) {
+        final double nextA = calculateA(target);
+        final double drag = calculateDrag(nextA);
+
+        if(lastANormal * nextA < 0) {
+            System.out.printf("aNormal change sign:%f%n ", nextA);
         }
-        lastANormal = aNormalLimit;
+        lastANormal = nextA;
 
-        getFly().step(t, drag, aNormalLimit);
-
+        getFly().step(t, drag, nextA);
         return isHit(target);
     }
 
     @Override
     public boolean canFly() {
         return canFlyImpl();
+    }
+
+    public void setFilter(ControlFilter filter) {
+        this.filter = filter;
     }
 }

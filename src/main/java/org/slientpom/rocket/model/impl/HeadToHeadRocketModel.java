@@ -1,6 +1,7 @@
 package org.slientpom.rocket.model.impl;
 
 import org.slientpom.rocket.domain.flight.TargetDron;
+import org.slientpom.rocket.domain.flight.filter.AverageXFilter;
 import org.slientpom.rocket.domain.flight.missiles.BangBangMissile;
 import org.slientpom.rocket.domain.geom.Fly;
 import org.slientpom.rocket.domain.geom.Point;
@@ -16,7 +17,7 @@ import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
  */
 public class HeadToHeadRocketModel implements PursitFlightModel {
     private double maxG = 5.5;
-    private double maxGBang = 20;// + 4 + 2 + 1;
+    private double maxGBang = 20 + 8;// + 4 + 2 + 1;
 
     @Override
     public PursitTrack generateFlight() {
@@ -36,6 +37,8 @@ public class HeadToHeadRocketModel implements PursitFlightModel {
         );
         missile.setMaxG(gLoad(maxGBang));
         missile.setLiftToDrag(4);
+        missile.setFilter(new AverageXFilter());
+        missile.setMinSpeed(200);
         //missile.setMinDistance(4*4);
 
         PursitFlightProducer flightScenario = new PursitFlightProducer(dron, missile);
