@@ -38,7 +38,7 @@ public class HeadToHeadRocketModel implements PursitFlightModel {
         missile.setMaxG(gLoad(maxGBang));
         missile.setLiftToDrag(4);
         missile.setFilter(new AverageXFilter());
-        missile.setMinSpeed(200);
+        missile.setMinSpeed(180);
         //missile.setMinDistance(4*4);
 
         PursitFlightProducer flightScenario = new PursitFlightProducer(dron, missile);
