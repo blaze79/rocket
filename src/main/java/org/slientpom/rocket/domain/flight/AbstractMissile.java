@@ -3,6 +3,7 @@ package org.slientpom.rocket.domain.flight;
 import org.slientpom.rocket.domain.flight.filter.ControlFilter;
 import org.slientpom.rocket.domain.flight.filter.SimpleControlFilter;
 import org.slientpom.rocket.domain.geom.Fly;
+import org.slientpom.rocket.domain.geom.Gravity;
 import org.slientpom.rocket.domain.geom.Vector;
 
 import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
@@ -20,6 +21,7 @@ public abstract class AbstractMissile implements FlyWithSeeker {
     private double liftToDrag = 50;
     private double minSpeed = 300;
 
+
     private ControlFilter filter = new SimpleControlFilter();
 
     private double lastANormal = 0;
@@ -33,10 +35,13 @@ public abstract class AbstractMissile implements FlyWithSeeker {
     }
 
     protected double limitAcceleration(double aNormal) {
-        if (aNormal > maxG) {
-            aNormal = maxG;
-        } else if (aNormal < -maxG) {
-            aNormal = -maxG;
+
+        double gLimit = Gravity.gLimitForSpeed(fly.getVelocity().lengthSq(), maxG);
+
+        if (aNormal > gLimit) {
+            aNormal = gLimit;
+        } else if (aNormal < -gLimit) {
+            aNormal = -gLimit;
         }
 
         return aNormal;
