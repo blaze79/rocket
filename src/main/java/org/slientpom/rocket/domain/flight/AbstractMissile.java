@@ -1,13 +1,16 @@
 package org.slientpom.rocket.domain.flight;
 
+import org.slientpom.rocket.domain.flight.filter.ControlFilter;
+import org.slientpom.rocket.domain.flight.filter.SimpleControlFilter;
 import org.slientpom.rocket.domain.geom.Fly;
+import org.slientpom.rocket.domain.geom.Vector;
 
 import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
 
 /**
  * Created by Vlad on 29.06.2018.
  */
-public abstract class MissileWithSeeker {
+public abstract class AbstractMissile implements FlyWithSeeker {
     private Fly fly;
     private double maxG = gLoad(20);
     /**
@@ -17,7 +20,11 @@ public abstract class MissileWithSeeker {
     private double liftToDrag = 50;
     private double minSpeed = 300;
 
-    protected MissileWithSeeker(Fly fly) {
+    private ControlFilter filter = new SimpleControlFilter();
+
+    private double lastANormal = 0;
+
+    protected AbstractMissile(Fly fly) {
         this.fly = fly;
     }
 
@@ -88,7 +95,46 @@ public abstract class MissileWithSeeker {
         this.minSpeed = minSpeed;
     }
 
-    protected boolean canFlyImpl() {
+    public ControlFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(ControlFilter filter) {
+        this.filter = filter;
+    }
+
+    @Override
+    public Fly currentPosition() {
+        return getFly().copy();
+    }
+
+    protected abstract double findNextAcceleration(Fly target);
+
+    protected double calculateA(Fly target) {
+        final double aNormal = findNextAcceleration(target);
+        final double aNormalLimit = limitAcceleration(aNormal);
+        return limitAcceleration(
+                filter.filterControl(aNormalLimit)
+        );
+    }
+
+    @Override
+    public boolean step(double t, Fly target) {
+        final double nextA = calculateA(target);
+        final double drag = calculateDrag(nextA);
+
+        if(lastANormal * nextA < 0) {
+            System.out.printf("aNormal change sign:%f%n ", nextA);
+        }
+        lastANormal = nextA;
+
+        getFly().step(t, drag, nextA);
+        return isHit(target);
+    }
+
+
+    @Override
+    public boolean canFly() {
         double speed = fly.getVelocity().length();
         if (speed < minSpeed) {
             System.out.printf("Missile out of speed %f%n", speed);
