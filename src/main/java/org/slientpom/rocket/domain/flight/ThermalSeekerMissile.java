@@ -1,7 +1,5 @@
 package org.slientpom.rocket.domain.flight;
 
-import org.slientpom.rocket.domain.flight.filter.ControlFilter;
-import org.slientpom.rocket.domain.flight.filter.SimpleControlFilter;
 import org.slientpom.rocket.domain.flight.seekers.ThermalSeeker;
 import org.slientpom.rocket.domain.geom.Fly;
 import org.slientpom.rocket.domain.geom.Vector;
