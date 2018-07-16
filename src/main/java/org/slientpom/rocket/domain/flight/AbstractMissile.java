@@ -113,10 +113,10 @@ public abstract class AbstractMissile implements FlyWithSeeker {
         return getFly().copy();
     }
 
-    protected abstract double findNextAcceleration(Fly target);
+    protected abstract double findNextAcceleration(Fly target, double t);
 
-    protected double calculateA(Fly target) {
-        final double aNormal = findNextAcceleration(target);
+    protected double calculateA(Fly target, double t) {
+        final double aNormal = findNextAcceleration(target, t);
         final double aNormalLimit = limitAcceleration(aNormal);
         return limitAcceleration(
                 filter.filterControl(aNormalLimit)
@@ -125,7 +125,7 @@ public abstract class AbstractMissile implements FlyWithSeeker {
 
     @Override
     public boolean step(double t, Fly target) {
-        final double nextA = calculateA(target);
+        final double nextA = calculateA(target, t);
         final double drag = calculateDrag(nextA);
 
         if(lastANormal * nextA < 0) {

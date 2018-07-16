@@ -1,8 +1,7 @@
 package org.slientpom.rocket.model.impl;
 
-import org.slientpom.rocket.domain.flight.StupidMissileDron;
 import org.slientpom.rocket.domain.flight.TargetDron;
-import org.slientpom.rocket.domain.flight.missiles.BangBangMissile;
+import org.slientpom.rocket.domain.flight.missiles.PropThermalMissile;
 import org.slientpom.rocket.domain.geom.Fly;
 import org.slientpom.rocket.domain.geom.Point;
 import org.slientpom.rocket.domain.geom.PursitTrack;
@@ -15,7 +14,7 @@ import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
 /**
  * Created by Vlad on 29.06.2018.
  */
-public class BangBangRocketModel implements PursitFlightModel {
+public class PropRocketModel implements PursitFlightModel {
     private double maxG = 5.5;
     private double maxGBang = 24 + 4;
 
@@ -29,7 +28,7 @@ public class BangBangRocketModel implements PursitFlightModel {
                 gLoad(maxG)
         );
 
-        BangBangMissile missile = new BangBangMissile(
+        PropThermalMissile missile = new PropThermalMissile(
                 new Fly(
                         Point.point(-1200, -1000),
                         Vector.vector(0, 700)

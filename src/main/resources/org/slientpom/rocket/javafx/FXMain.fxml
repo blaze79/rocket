@@ -14,7 +14,9 @@
          </padding>
          <Button fx:id="button1" alignment="center" onAction="#run1Flight" text="2 Drones flight" />
          <Button fx:id="button2" alignment="center" onAction="#run2Flight" text="Bang Bang" />
+         <Button fx:id="buttonProp" alignment="center" onAction="#runPropFlight" text="Prop N=3" />
          <Button fx:id="button3" alignment="center" onAction="#run3Flight" text="Head to head" />
+         <Button fx:id="buttonPropHead" alignment="center" onAction="#runPropHeadFlight" text="H2H Prop N=3" />
       </HBox>
    </bottom>
    <center>

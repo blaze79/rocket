@@ -9,7 +9,7 @@ import static org.slientpom.rocket.domain.geom.Gravity.gLoad;
  */
 public class BangBangSeeker implements ThermalSeeker {
     @Override
-    public double calculateNormalAcceleration(Vector target, Vector velocity) {
+    public double calculateNormalAcceleration(Vector target, Vector velocity, double t) {
         Vector rightNormal = velocity.normal();
         if (Vector.dot(rightNormal, target) > 0) {
             return gLoad(100);

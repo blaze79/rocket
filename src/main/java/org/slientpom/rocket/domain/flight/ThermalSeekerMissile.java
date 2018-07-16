@@ -16,9 +16,9 @@ public class ThermalSeekerMissile extends AbstractMissile {
     }
 
     @Override
-    protected double findNextAcceleration(Fly target) {
+    protected double findNextAcceleration(Fly target, double t) {
         final Vector vectorToTarget = getFly().getPoint().vectorTo(target.getPoint()).unify();
-        return seeker.calculateNormalAcceleration(vectorToTarget, getFly().getVelocity());
+        return seeker.calculateNormalAcceleration(vectorToTarget, getFly().getVelocity(), t);
     }
 
 }
