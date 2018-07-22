@@ -26,6 +26,10 @@ public class ModelRenderer {
     private org.slientpom.rocket.domain.geom.Point nePoint = org.slientpom.rocket.domain.geom.Point.point(-1500, 1000);
     private org.slientpom.rocket.domain.geom.Point swPoint = org.slientpom.rocket.domain.geom.Point.point(1500, -1000);
 
+    private final static double minZoomPart = 1.0/6;
+    private final static double zoomFactor = 2;
+    private final static double minDistance = 200;
+
     public int getImageWith() {
         return imageWith;
     }
@@ -93,19 +97,55 @@ public class ModelRenderer {
     public Mat renderPursitFrame(PursitTrack track, int time) {
         Mat image = createImage();
 
+        List<Fly> targetTrack = track.getTarget().getTrackForTime(time);
+        List<Fly> rocketTrack = track.getRocket().getTrackForTime(time);
+        Fly target = targetTrack.get(targetTrack.size() - 1);
+        Fly rocket = rocketTrack.get(rocketTrack.size() - 1);
+        correctScale(target.getPoint(), rocket.getPoint());
+
         drawTrack(
                 image,
-                track.getTarget().getTrackForTime(time),
+                targetTrack,
                 objectColor
         );
 
         drawTrack(
                 image,
-                track.getRocket().getTrackForTime(time),
+                rocketTrack,
                 rocketColor
         );
 
         return image;
+    }
+
+    private void correctScale(org.slientpom.rocket.domain.geom.Point target, org.slientpom.rocket.domain.geom.Point rocket) {
+        Vector viewArea = nePoint.vectorTo(swPoint);
+        double vx = Math.abs(viewArea.getX());
+        double vy = Math.abs(viewArea.getY());
+
+        Vector flyZone = target.vectorTo(rocket);
+        double dx = Math.abs(flyZone.getX());
+        double dy = Math.abs(flyZone.getY());
+
+        if (dx < vx * minZoomPart && dy < vy * minZoomPart) {
+            if (dx > minDistance || dy > minDistance) {
+                Vector swVec = Vector.vector(vx / zoomFactor / 2, -vy / zoomFactor / 2);
+                Vector neVec = Vector.vector(-vx / zoomFactor / 2, vy / zoomFactor / 2);
+                swPoint = target.move(swVec);
+                nePoint = target.move(neVec);
+                System.out.println("Zoom in");
+            }
+        } else {
+            Vector toRocket = nePoint.vectorTo(rocket);
+            if(toRocket.getX() < 0 || toRocket.getY() > 0 ||
+                    toRocket.getX() > viewArea.getX() || toRocket.getY() < viewArea.getY()) {
+                Vector swVec = Vector.vector(vx * zoomFactor / 2, -vy * zoomFactor / 2);
+                Vector neVec = Vector.vector(-vx * zoomFactor / 2, vy * zoomFactor / 2);
+                swPoint = target.move(swVec);
+                nePoint = target.move(neVec);
+                System.out.println("Zoom out");
+            }
+        }
     }
 
     //getTrackForTime
