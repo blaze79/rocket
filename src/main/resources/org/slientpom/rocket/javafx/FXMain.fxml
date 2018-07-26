@@ -17,6 +17,9 @@
          <Button fx:id="buttonProp" alignment="center" onAction="#runPropFlight" text="Prop N=3" />
          <Button fx:id="button3" alignment="center" onAction="#run3Flight" text="Head to head" />
          <Button fx:id="buttonPropHead" alignment="center" onAction="#runPropHeadFlight" text="H2H Prop N=3" />
+         <Button fx:id="buttonHead2M" alignment="center" onAction="#run2MHeadFlight" text="H2H 2M" />
+
+
       </HBox>
    </bottom>
    <center>

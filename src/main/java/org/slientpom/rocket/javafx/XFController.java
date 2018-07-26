@@ -34,6 +34,9 @@ public class XFController {
     @FXML
     private Button buttonProp;
 
+    @FXML
+    private Button buttonHead2M;
+
     // the FXML image view
     @FXML
     private ImageView currentFrame;
@@ -75,6 +78,14 @@ public class XFController {
     @FXML
     protected void runPropHeadFlight(ActionEvent event) {
         PursitFlightModel model = new HeadToHeadPropRocketModel();
+        PursitTrack pursitTrack = model.generateFlight();
+
+        renderFilm(pursitTrack);
+    }
+
+    @FXML
+    protected void run2MHeadFlight(ActionEvent event) {
+        PursitFlightModel model = new HeadToHead2MRocketModel();
         PursitTrack pursitTrack = model.generateFlight();
 
         renderFilm(pursitTrack);

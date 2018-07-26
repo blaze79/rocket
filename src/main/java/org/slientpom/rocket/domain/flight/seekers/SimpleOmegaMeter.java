@@ -16,9 +16,13 @@ public class SimpleOmegaMeter implements OmegaMeter {
             return 0;
         }
 
-        double angle = Math.acos(Vector.dot(last, direction));
         double part = Vector.dot(last.normal(), direction);
+        double angle = Math.acos(Vector.dot(last, direction));
+
         last = direction;
+        if (Double.isNaN(angle)) {
+            return 0;
+        }
 
         if (part > 0) {
             return angle / t;
